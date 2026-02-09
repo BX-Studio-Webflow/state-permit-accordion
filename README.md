@@ -27,6 +27,7 @@ An interactive accordion component for blog cards that automatically cycles thro
 ## Using the Accordion
 
 The blog accordion component automatically cycles through accordion items every 10 seconds. Each item features:
+
 - Dynamic SVG icon state transitions (blue for active, gray for inactive)
 - Hover interaction to manually select items
 - Automatic cycling that restarts after manual selection
@@ -55,7 +56,13 @@ Each accordion item requires the following structure:
     <div class="blog-accordion-header">
       <div dev-target="accordion-title" class="blog-accordion-title">Technical Excellence</div>
       <div dev-target="accordion-arrow" class="blog-accordion_arrow w-embed">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="11" viewBox="0 0 20 11" fill="none">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="11"
+          viewBox="0 0 20 11"
+          fill="none"
+        >
           <path d="M0.353516 0.353516L9.85352 9.85352L19.3535 0.353516" stroke="#020C2E"></path>
         </svg>
       </div>
@@ -77,6 +84,7 @@ All accordion items **must** include these `dev-target` attributes:
 - `dev-target="accordion-message"` - Accordion content/description text
 
 The component will automatically:
+
 - Change SVG circle colors based on active state
 - Add/remove the `is-active` class on the accordion container
 - Cycle through items every 10 seconds
@@ -112,6 +120,7 @@ private readonly TAB_DURATION = 10000; // milliseconds (10 seconds)
 
 **SVG Colors:**
 The component automatically transitions SVG circle colors:
+
 - **Active state:** `#3467E5` (blue)
 - **Inactive state:** `#E7E7E7` (gray)
 
@@ -119,6 +128,7 @@ To customize these colors, update the color values in the `activateAccordion` me
 
 **Styling:**
 Customize the appearance by updating your Webflow styles or add custom CSS:
+
 - `.blog-accordion_card` - Accordion card container
 - `.blog-accordion_card.is-active` - Active accordion state
 - `.blog-accordion-title` - Title styling
