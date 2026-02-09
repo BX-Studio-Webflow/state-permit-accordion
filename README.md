@@ -37,13 +37,32 @@ The blog accordion component automatically cycles through accordion items every 
 Each accordion item requires the following structure:
 
 ```html
-<div dev-target="accordion" class="flex-vertical gap-1">
-  <h3 dev-target="accordion-title" class="work-side-title">Tab Title</h3>
-  <div dev-target="accordion-message" class="work-side-subtitle">
-    Tab content description goes here.
+<div dev-target="accordion" class="blog-accordion_card">
+  <div dev-target="accordion-svg" class="blog-accordion_logo w-embed">
+    <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34" fill="none">
+      <circle cx="4.08" cy="4.08" r="4.08" fill="#3467E5"></circle>
+      <circle cx="16.9999" cy="4.08" r="4.08" fill="#3467E5"></circle>
+      <circle cx="29.9203" cy="4.08" r="4.08" fill="#3467E5"></circle>
+      <circle cx="4.08" cy="16.9999" r="4.08" fill="#3467E5"></circle>
+      <circle cx="16.9999" cy="16.9999" r="4.08" fill="#3467E5"></circle>
+      <circle cx="29.9203" cy="16.9999" r="4.08" fill="#3467E5"></circle>
+      <circle cx="4.08" cy="29.9198" r="4.08" fill="#3467E5"></circle>
+      <circle cx="16.9999" cy="29.9198" r="4.08" fill="#3467E5"></circle>
+      <circle cx="29.9203" cy="29.9198" r="4.08" fill="#3467E5"></circle>
+    </svg>
   </div>
-  <div dev-target="accordion-animation-track" class="animation-track">
-    <div dev-target="accordion-animation-fill" class="animation-fill"></div>
+  <div class="blog-accordion-body">
+    <div class="blog-accordion-header">
+      <div dev-target="accordion-title" class="blog-accordion-title">Technical Excellence</div>
+      <div dev-target="accordion-arrow" class="blog-accordion_arrow w-embed">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="11" viewBox="0 0 20 11" fill="none">
+          <path d="M0.353516 0.353516L9.85352 9.85352L19.3535 0.353516" stroke="#020C2E"></path>
+        </svg>
+      </div>
+    </div>
+    <div dev-target="accordion-message" class="blog-accordion-text">
+      Hand off a Figma design and we'll build it on Webflow via a white-glove process.
+    </div>
   </div>
 </div>
 ```
@@ -52,11 +71,16 @@ Each accordion item requires the following structure:
 
 All accordion items **must** include these `dev-target` attributes:
 
-- `dev-target="accordion"` - Main accordion container
-- `dev-target="accordion-title"` - Tab title element
-- `dev-target="accordion-message"` - Tab content/description
-- `dev-target="accordion-animation-track"` - Progress bar container
-- `dev-target="accordion-animation-fill"` - Progress bar fill element
+- `dev-target="accordion"` - Main accordion card container
+- `dev-target="accordion-svg"` - SVG icon container (circles will transition between #3467E5 for active and #E7E7E7 for inactive)
+- `dev-target="accordion-title"` - Accordion title element
+- `dev-target="accordion-message"` - Accordion content/description text
+
+The component will automatically:
+- Change SVG circle colors based on active state
+- Add/remove the `is-active` class on the accordion container
+- Cycle through items every 10 seconds
+- Reset cycling when a user hovers over an item
 
 ⚠️ **Important:** The accordion will fail gracefully and log errors if any required attributes are missing.
 
@@ -65,42 +89,49 @@ All accordion items **must** include these `dev-target` attributes:
 1. **Add the script to your Webflow page:**
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/YOUR-USERNAME/automatic-accordion@v0.0.1/dist/index.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/YOUR-USERNAME/bx-blog-accordion@v0.0.1/dist/index.js"></script>
 ```
 
 2. **Add multiple accordion items** with the structure shown above
 
 3. **The accordion will automatically:**
-   - Activate the first tab on page load
-   - Display a smooth progress bar animating from 0% to 100% over 10 seconds
-   - Automatically cycle to the next tab every 10 seconds
-   - Loop back to the first tab after the last one
+   - Activate the first accordion on page load
+   - Change SVG icon colors (blue #3467E5 for active, gray #E7E7E7 for inactive)
+   - Automatically cycle to the next accordion every 10 seconds
+   - Allow manual selection via hover (cycling restarts after hover)
+   - Loop back to the first accordion after the last one
 
 ### Customization
 
 **Timing:**
-To change the tab duration, modify `TAB_DURATION` in `src/utils/accordion-animation.ts`:
+To change the accordion cycle duration, modify `TAB_DURATION` in `src/utils/accordion-animation.ts`:
 
 ```typescript
-private readonly TAB_DURATION = 10000; // milliseconds
+private readonly TAB_DURATION = 10000; // milliseconds (10 seconds)
 ```
 
-**Styling:**
-Customize the appearance in `src/styles/accordion-animations.css`:
+**SVG Colors:**
+The component automatically transitions SVG circle colors:
+- **Active state:** `#3467E5` (blue)
+- **Inactive state:** `#E7E7E7` (gray)
 
-- Progress bar colors and height
-- Active/inactive states
-- Transition speeds
-- Hover effects
+To customize these colors, update the color values in the `activateAccordion` method in `src/utils/accordion-animation.ts`.
+
+**Styling:**
+Customize the appearance by updating your Webflow styles or add custom CSS:
+- `.blog-accordion_card` - Accordion card container
+- `.blog-accordion_card.is-active` - Active accordion state
+- `.blog-accordion-title` - Title styling
+- `.blog-accordion-text` - Message text styling
 
 **Manual Control:**
 Access the accordion controller to manually control behavior:
 
 ```javascript
-// Example: Stop auto-cycling
+// Stop auto-cycling
 accordionController.stop();
 
-// Go to specific tab (0-indexed)
+// Go to specific accordion (0-indexed)
 accordionController.goToAccordion(2);
 
 // Destroy the accordion
@@ -316,6 +347,6 @@ To create and publish a new version:
 
 4. **Update Webflow script tag** - Use the new version in your Webflow project
    ```html
-   <script src="https://cdn.jsdelivr.net/gh/BX-Studio-Webflow/mega-menu-animation@v0.0.1/dist/index.js"></script>
+   <script src="https://cdn.jsdelivr.net/gh/YOUR-USERNAME/bx-blog-accordion@v0.0.1/dist/index.js"></script>
    ```
    Update the version number in the `@v0.0.1` part of the URL to match your release
