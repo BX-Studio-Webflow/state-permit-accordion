@@ -1,5 +1,6 @@
-import { FaqAccordionController } from '$utils/faq-accordion';
+import './styles/accordion-animations.css';
 
+import { FaqAccordionController } from '$utils/faq-accordion';
 window.Webflow ||= [];
 window.Webflow.push(() => {
   const faqAccordionController = new FaqAccordionController();

@@ -1,9 +1,13 @@
 /**
  * FAQ accordion controller
  *
- * Handles:
- * - Left-nav tab clicks → smooth scroll to the matching accordion-group section (by id)
- * - Individual accordion item open/close within each group
+ * Attribute contract:
+ *   [dev-target="faq-tab"]     — left-nav tab link, also carry a `goto` attr matching the section's dev-target
+ *   [dev-target="faq-group"]   — wrapper for each accordion section
+ *   [dev-target="faq-item"]    — single accordion row
+ *   [dev-target="faq-header"]  — clickable header inside faq-item
+ *   [dev-target="faq-body"]    — collapsible body inside faq-item
+ *   [dev-target="faq-arrow"]   — arrow icon inside faq-header
  */
 
 export class FaqAccordionController {
@@ -18,10 +22,10 @@ export class FaqAccordionController {
   // ─── Left-side tab navigation ───────────────────────────────────────────────
 
   private initTabNav(): void {
-    const links = document.querySelectorAll<HTMLElement>('.tab-link');
+    const links = document.querySelectorAll<HTMLElement>('[dev-target="faq-tab"]');
 
     if (!links.length) {
-      console.error('No .tab-link elements found');
+      console.error('No [dev-target="faq-tab"] elements found');
       return;
     }
 
@@ -39,19 +43,15 @@ export class FaqAccordionController {
     const targetId = clickedLink.getAttribute('goto');
     if (!targetId) return;
 
-    // Find the accordion-group whose h5 has the matching dev-target
-    const targetTitle = document.querySelector<HTMLElement>(`[dev-target="${targetId}"]`);
+    const section = document.getElementById(targetId);
 
-    if (!targetTitle) {
-      console.error(`No element found with [dev-target="${targetId}"]`);
+    if (!section) {
+      console.error(`No element found with id="${targetId}"`);
       return;
     }
 
-    // Scroll the parent accordion-group into view
-    const section = targetTitle.closest<HTMLElement>('.accordion-group') ?? targetTitle;
     section.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-    // Update active tab
     this.tabLinks.forEach((l) => l.classList.remove('is-active'));
     clickedLink.classList.add('is-active');
   }
@@ -59,17 +59,17 @@ export class FaqAccordionController {
   // ─── Accordion open / close ──────────────────────────────────────────────────
 
   private initAccordionItems(): void {
-    const items = document.querySelectorAll<HTMLElement>('.one-accordion-item');
+    const items = document.querySelectorAll<HTMLElement>('[dev-target="faq-item"]');
 
     if (!items.length) {
-      console.error('No .one-accordion-item elements found');
+      console.error('No [dev-target="faq-item"] elements found');
       return;
     }
 
     items.forEach((item) => {
       this.accordionItems.push(item);
 
-      const header = item.querySelector<HTMLElement>('.accordion-header');
+      const header = item.querySelector<HTMLElement>('[dev-target="faq-header"]');
       if (!header) return;
 
       header.addEventListener('click', () => {
@@ -81,15 +81,13 @@ export class FaqAccordionController {
   private toggleAccordion(item: HTMLElement): void {
     const isOpen = item.classList.contains('is-open');
 
-    // Close all siblings in the same group
-    const group = item.closest<HTMLElement>('.accordion-group');
+    const group = item.closest<HTMLElement>('[dev-target="faq-group"]');
     if (group) {
-      group.querySelectorAll<HTMLElement>('.one-accordion-item').forEach((sibling) => {
+      group.querySelectorAll<HTMLElement>('[dev-target="faq-item"]').forEach((sibling) => {
         sibling.classList.remove('is-open');
       });
     }
 
-    // Toggle clicked item
     if (!isOpen) {
       item.classList.add('is-open');
     }

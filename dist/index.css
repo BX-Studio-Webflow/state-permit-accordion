@@ -1,1 +1,33 @@
-[dev-target=accordion].is-active{box-shadow:0 336px 94px #066ff900,0 215px 86px #066ff903,0 121px 73px #066ff908,0 54px 54px #066ff90f,0 13px 30px #066ff90f}[dev-target=accordion].is-active [dev-target=accordion-title],[dev-target=accordion].is-active [dev-target=accordion-message]{opacity:1}[dev-target=accordion].is-active [dev-target=accordion-arrow]{rotate:180deg}[dev-target=accordion]:not(.is-active) [dev-target=accordion-title]{color:#020c2e!important;background-image:linear-gradient(90deg,#020c2e,#020c2e)}[dev-target=accordion]:not(.is-active) [dev-target=accordion-message]{opacity:0;display:none}[dev-target=accordion]:not(.is-active) [dev-target=accordion-arrow]{rotate:0deg}[dev-target=accordion-title],[dev-target=accordion-message]{transition:opacity .3s ease}[dev-target=accordion]{cursor:pointer;transition:transform .2s ease}[dev-target=accordion]:hover{transform:translate(1px)}
+/* src/styles/accordion-animations.css */
+[dev-target=faq-tab] {
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+[dev-target=faq-tab].is-active {
+  opacity: 1;
+}
+[dev-target=faq-header] {
+  cursor: pointer;
+  user-select: none;
+}
+[dev-target=faq-arrow] {
+  transition: transform 0.3s ease;
+}
+[dev-target=faq-item].is-open [dev-target=faq-arrow] {
+  transform: rotate(180deg);
+}
+[dev-target=faq-body] {
+  display: grid !important;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s ease;
+  overflow: hidden;
+}
+[dev-target=faq-item].is-open [dev-target=faq-body] {
+  grid-template-rows: 1fr;
+}
+[dev-target=faq-body] > * {
+  overflow: hidden;
+  min-height: 0;
+}
+/*# sourceMappingURL=index.css.map */

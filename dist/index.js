@@ -1,1 +1,82 @@
-"use strict";(()=>{var v=Object.defineProperty;var g=(r,t,e)=>t in r?v(r,t,{enumerable:!0,configurable:!0,writable:!0,value:e}):r[t]=e;var a=(r,t,e)=>g(r,typeof t!="symbol"?t+"":t,e);var n=class{constructor(){a(this,"accordions",[]);a(this,"state",{currentIndex:0,intervalId:null});a(this,"TAB_DURATION",1e4)}init(){let t=document.querySelectorAll('[dev-target="accordion"]');if(!t||t.length===0){console.error('No accordion elements found with [dev-target="accordion"]');return}if(t.forEach((e,o)=>{if(!(e instanceof HTMLElement)){console.error(`Accordion at index ${o} is not an HTMLElement`);return}let c=e.querySelector('[dev-target="accordion-title"]'),i=e.querySelector('[dev-target="accordion-message"]');if(!c){console.error(`Accordion at index ${o} is missing [dev-target="accordion-title"]`);return}if(!i){console.error(`Accordion at index ${o} is missing [dev-target="accordion-message"]`);return}e.addEventListener("mouseenter",()=>{this.goToAccordion(o)}),this.accordions.push(e)}),this.accordions.length===0){console.error("No valid accordions found after validation");return}this.activateAccordion(0),this.startAutoCycle()}activateAccordion(t){this.accordions.forEach(i=>{i.classList.remove("is-active");let d=i.querySelector('[dev-target="accordion-svg"]');if(!d){console.error(`Active accordion at index ${t} is missing [dev-target="accordion-svg"]`);return}let s=d.querySelectorAll("circle");if(!s||s.length===0){console.error(`Active accordion at index ${t} has no circles in its SVG`);return}s.forEach(l=>{l.setAttribute("fill","#E7E7E7")})});let e=this.accordions[t];e.classList.add("is-active");let o=e.querySelector('[dev-target="accordion-svg"]');if(!o){console.error(`Active accordion at index ${t} is missing [dev-target="accordion-svg"]`);return}let c=o.querySelectorAll("circle");if(!c||c.length===0){console.error(`Active accordion at index ${t} has no circles in its SVG`);return}c.forEach(i=>{i.setAttribute("fill","#3467E5")}),this.state.currentIndex=t}startAutoCycle(){this.state.intervalId=window.setInterval(()=>{let t=(this.state.currentIndex+1)%this.accordions.length;this.activateAccordion(t)},this.TAB_DURATION)}stop(){this.state.intervalId!==null&&(clearInterval(this.state.intervalId),this.state.intervalId=null)}goToAccordion(t){if(t<0||t>=this.accordions.length){console.error(`Invalid accordion index: ${t}`);return}this.state.intervalId!==null&&clearInterval(this.state.intervalId),this.activateAccordion(t),this.startAutoCycle()}destroy(){this.stop(),this.accordions=[],this.state={currentIndex:0,intervalId:null}}};window.Webflow||(window.Webflow=[]);window.Webflow.push(()=>{new n().init()});})();
+"use strict";
+(() => {
+  // bin/live-reload.js
+  new EventSource(`${"http://localhost:3000"}/esbuild`).addEventListener("change", () => location.reload());
+
+  // src/utils/faq-accordion.ts
+  var FaqAccordionController = class {
+    tabLinks = [];
+    accordionItems = [];
+    init() {
+      this.initTabNav();
+      this.initAccordionItems();
+    }
+    // ─── Left-side tab navigation ───────────────────────────────────────────────
+    initTabNav() {
+      const links = document.querySelectorAll('[dev-target="faq-tab"]');
+      if (!links.length) {
+        console.error('No [dev-target="faq-tab"] elements found');
+        return;
+      }
+      links.forEach((link) => {
+        this.tabLinks.push(link);
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          this.handleTabClick(link);
+        });
+      });
+    }
+    handleTabClick(clickedLink) {
+      const targetId = clickedLink.getAttribute("goto");
+      if (!targetId) return;
+      const section = document.getElementById(targetId);
+      if (!section) {
+        console.error(`No element found with id="${targetId}"`);
+        return;
+      }
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+      this.tabLinks.forEach((l) => l.classList.remove("is-active"));
+      clickedLink.classList.add("is-active");
+    }
+    // ─── Accordion open / close ──────────────────────────────────────────────────
+    initAccordionItems() {
+      const items = document.querySelectorAll('[dev-target="faq-item"]');
+      if (!items.length) {
+        console.error('No [dev-target="faq-item"] elements found');
+        return;
+      }
+      items.forEach((item) => {
+        this.accordionItems.push(item);
+        const header = item.querySelector('[dev-target="faq-header"]');
+        if (!header) return;
+        header.addEventListener("click", () => {
+          this.toggleAccordion(item);
+        });
+      });
+    }
+    toggleAccordion(item) {
+      const isOpen = item.classList.contains("is-open");
+      const group = item.closest('[dev-target="faq-group"]');
+      if (group) {
+        group.querySelectorAll('[dev-target="faq-item"]').forEach((sibling) => {
+          sibling.classList.remove("is-open");
+        });
+      }
+      if (!isOpen) {
+        item.classList.add("is-open");
+      }
+    }
+    destroy() {
+      this.tabLinks = [];
+      this.accordionItems = [];
+    }
+  };
+
+  // src/index.ts
+  window.Webflow ||= [];
+  window.Webflow.push(() => {
+    const faqAccordionController = new FaqAccordionController();
+    faqAccordionController.init();
+  });
+})();
+//# sourceMappingURL=index.js.map
